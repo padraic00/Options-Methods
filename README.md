@@ -389,6 +389,48 @@ for i in range(CmC.shape[1]):
 
 The conclusion of this error analysis is that if we take the Black Scholes value to be the accepted value of the option at time t=0, the method developed has 1.23% error.
 
+## Time Differences between the two methods
+
+
+```python
+%%timeit
+m=5 #time steps
+K=100 #strike price
+r=0.05 #risk free rate
+T=20/36 #strike time
+sigma=0.30 #implied volatiity
+
+time = scipy.linspace (0.0, T , m ) #time series
+S = 100 # stock price
+
+logSoverK = scipy . log ( S / K )
+n12 = (( r + sigma **2/2) *( T - time ) )
+n22 = (( r - sigma **2/2) *( T - time ) )
+numerd1 = logSoverK + n12 
+numerd2 = logSoverK  + n22
+d1 = numerd1 /( sigma * scipy . sqrt (T - time )) 
+d2 = numerd2 /( sigma * scipy . sqrt (T - time ))
+
+part1 = S * norm . cdf ( d1 )
+part2 = norm.cdf(d2) * K * scipy.exp( - r *( T - time ) ) 
+VC=part1-part2
+```
+
+    C:\Users\TanayT\Anaconda3\lib\site-packages\ipykernel\__main__.py:271: RuntimeWarning: invalid value encountered in true_divide
+    C:\Users\TanayT\Anaconda3\lib\site-packages\ipykernel\__main__.py:272: RuntimeWarning: invalid value encountered in true_divide
+    C:\Users\TanayT\Anaconda3\lib\site-packages\scipy\stats\_distn_infrastructure.py:875: RuntimeWarning: invalid value encountered in greater
+      return (self.a < x) & (x < self.b)
+    C:\Users\TanayT\Anaconda3\lib\site-packages\scipy\stats\_distn_infrastructure.py:875: RuntimeWarning: invalid value encountered in less
+      return (self.a < x) & (x < self.b)
+    C:\Users\TanayT\Anaconda3\lib\site-packages\scipy\stats\_distn_infrastructure.py:1731: RuntimeWarning: invalid value encountered in greater_equal
+      cond2 = (x >= self.b) & cond0
+    
+
+    1000 loops, best of 3: 202 µs per loop
+    
+
+Conclusion? The Black Scholes Computation takes more time than our matrix generation by 60 microseconds. Neither method has yet been optimized, both calculate more values than necessary. However, we can take this result to heart that our efforts are going somewhere.
+
 
 ```python
 
