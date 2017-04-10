@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 
 ```python
-m=17 #time steps
+m=5 #time steps
 K=100 #strike price
 r=0.05 #risk free rate
 T=20/36 #strike time
@@ -184,7 +184,7 @@ Testing for consistency and timing...
 method1 = bop(n,t,S,v)
 ```
 
-    10000 loops, best of 3: 143 µs per loop
+    10000 loops, best of 3: 147 µs per loop
     
 
 
@@ -193,7 +193,7 @@ method1 = bop(n,t,S,v)
 method2 = better_bop(n,t,S,v)
 ```
 
-    10000 loops, best of 3: 84.2 µs per loop
+    10000 loops, best of 3: 84.7 µs per loop
     
 
 
@@ -322,6 +322,72 @@ print('Put Option:\n',np.matrix(CmP.astype(int)))
      [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 57 55]
      [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 60]]
     
+
+## Error Accumulation Between Two Methods
+
+
+```python
+type(CmC[1,1])
+```
+
+
+
+
+    numpy.float64
+
+
+
+
+```python
+CmC.shape[1]
+```
+
+
+
+
+    18
+
+
+
+
+```python
+for i in range(CmC.shape[1]):
+    print(CmC[i,i])
+```
+
+    10.3431748302
+    7.13944312261
+    4.6226679354
+    2.7588220853
+    1.48054109593
+    0.688577830495
+    0.261364819933
+    0.0723485357168
+    0.0110219039948
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    0.0
+    
+
+
+```python
+(CmC[0,0]-VC[0])/(VC[0])*100
+```
+
+
+
+
+    1.2321505181400323
+
+
+
+The conclusion of this error analysis is that if we take the Black Scholes value to be the accepted value of the option at time t=0, the method developed has 1.23% error.
 
 
 ```python
